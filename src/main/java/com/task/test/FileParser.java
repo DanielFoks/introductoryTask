@@ -73,7 +73,7 @@ public class FileParser {
 				queryOperation = new UpdateOperation(this.resultTable);
 				break;
 			default:
-				System.err.println("Invalid operation type.");
+				System.err.println("Invalid operation type. " + tokens[0]);
 				return;
 		}
 		queryOperation.doWork(Arrays.copyOfRange(tokens, 1, tokens.length));

@@ -1,14 +1,12 @@
 package com.task.test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ResultTable {
-	
-	public static final String BEST_BID_IS_ALWAYS_LOWER_THEN_BEST_ASK = "Best bid is always lower then best ask.";
-	
 	private final Map<Integer, ResultTableObject> aMap = new TreeMap<>(Collections.reverseOrder());
 	private final Map<Integer, ResultTableObject> bMap = new TreeMap<>(Collections.reverseOrder());
 	private final Map<Integer, ResultTableObject> sMap = new HashMap<>();
@@ -18,34 +16,34 @@ public class ResultTable {
 			System.err.println(String.format("Invalid object {%s}", resultTableObject));
 			return false;
 		}
+		final ResultTableObject tmp;
 		
 		if (resultTableObject.getType() == ResultTableObject.Type.A) {
-/*			if (this.minimumB() != null && this.minimumB().getPrice() >= resultTableObject.getPrice()) {
-				System.err.println(BEST_BID_IS_ALWAYS_LOWER_THEN_BEST_ASK);
-			}*/
-			this.aMap.put(resultTableObject.getPrice(), resultTableObject);
-			return true;
+			tmp = this.minimumB();
+			if (tmp == null || tmp.getPrice() < resultTableObject.getPrice()) {
+				this.aMap.put(resultTableObject.getPrice(), resultTableObject);
+			}
+			// else do smth
 		}
-		
-		if (resultTableObject.getType() == ResultTableObject.Type.B) {
-/*			if (this.maximumA() != null && this.maximumA().getPrice() <= resultTableObject.getPrice()) {
-				System.err.println(BEST_BID_IS_ALWAYS_LOWER_THEN_BEST_ASK);
-			}*/
-			this.bMap.put(resultTableObject.getPrice(), resultTableObject);
-			return true;
+		else if (resultTableObject.getType() == ResultTableObject.Type.B) {
+			tmp = this.maximumA();
+			if (tmp == null || tmp.getPrice() > resultTableObject.getPrice()) {
+				this.bMap.put(resultTableObject.getPrice(), resultTableObject);
+			}
+			// else do smth
 		}
-		
-		this.sMap.put(resultTableObject.getPrice(), resultTableObject);
+		else {
+			this.sMap.put(resultTableObject.getPrice(), resultTableObject);
+		}
 		return true;
 	}
 	
 	
 	public ResultTableObject maximumA() {
-/*		if (this.aMap.isEmpty()) {
+		if (this.aMap.isEmpty()) {
 			return null;
 		}
-		return new ArrayList<>(this.aMap.values()).get(this.aMap.size() - 1);*/
-		return this.aMap.values().parallelStream().reduce((first, second) -> second).orElse(null);
+		return new ArrayList<>(this.aMap.values()).get(this.aMap.size() - 1);
 	}
 	
 	public ResultTableObject minimumB() {
