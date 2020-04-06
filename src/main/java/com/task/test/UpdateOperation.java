@@ -6,23 +6,24 @@ public class UpdateOperation extends QueryOperation {
 	}
 	
 	@Override
-	public String doWork(final String[] tokens) {
-		if (tokens.length != 3){
+	public String doWork(final String[] tokens) throws Exception {
+		if (tokens.length != 3) {
 			System.err.println(INVALID_REQUEST);
-			return ERROR;
+			throw new Exception(INVALID_REQUEST);
 		}
 		final ResultTableObject resultTableObject = new ResultTableObject();
 		
 		try {
 			resultTableObject.setPrice(Integer.parseInt(tokens[0]));
 			resultTableObject.setSize(Integer.parseInt(tokens[1]));
-		}catch (final NumberFormatException e){
+		}
+		catch (final NumberFormatException e) {
 			System.err.println(INVALID_REQUEST + " : " + e);
 			return ERROR;
 		}
 		resultTableObject.setType(ResultTableObject.Type.convertType(tokens[2]));
 		
-		if (this.resultTable.update(resultTableObject)){
+		if (this.resultTable.update(resultTableObject)) {
 			return resultTableObject.toString() + " was updated.";
 		}
 		

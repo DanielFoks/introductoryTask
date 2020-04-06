@@ -9,5 +9,5 @@ public abstract class QueryOperation {
 		this.resultTable = resultTable;
 	}
 	
-	abstract String doWork(String[] tokens);
+	abstract String doWork(String[] tokens) throws Exception;
 }

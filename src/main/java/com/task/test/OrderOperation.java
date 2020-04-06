@@ -7,31 +7,24 @@ public class OrderOperation extends QueryOperation {
 	}
 	
 	@Override
-	String doWork(final String[] tokens) {
+	String doWork(final String[] tokens) throws Exception {
 		if (tokens.length != 2) {
 			System.err.println(INVALID_REQUEST);
-			return ERROR;
+			throw new Exception(INVALID_REQUEST);
 		}
 		
 		final ResultTableObject objectToUpdate;
 		if ("buy".equals(tokens[0])) {
-			objectToUpdate = this.resultTable.get(this.resultTable.maximumA());
+			objectToUpdate = this.resultTable.maximumA();
 		}
 		else if ("sell".equals(tokens[0])) {
-			objectToUpdate = this.resultTable.get(this.resultTable.minimumB());
+			objectToUpdate = this.resultTable.minimumB();
 		}
 		else {
 			return ERROR;
 		}
 		
-		
-		try {
-			objectToUpdate.setSize(objectToUpdate.getSize() - Integer.parseInt(tokens[1]));
-		}catch (final NumberFormatException e){
-			System.err.println(e.getLocalizedMessage());
-			return ERROR;
-		}
-		
+		objectToUpdate.setSize(objectToUpdate.getSize() - Integer.parseInt(tokens[1]));
 		return objectToUpdate.toString();
 	}
 }

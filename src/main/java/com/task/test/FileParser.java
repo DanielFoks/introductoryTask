@@ -28,7 +28,6 @@ public class FileParser {
 		}
 		
 		final List<String> outputList = new LinkedList<>();
-		
 		try (final BufferedReader bufferedReader1 = Files.newBufferedReader(this.inputPathFile)) {
 			String line1 = bufferedReader1.readLine();
 			
@@ -49,29 +48,35 @@ public class FileParser {
 			}
 			
 			final String[] tokens = line.split(",");
-			this.checkOperationAndDoWork(tokens, outputList);
+			
+			//EXCEPTION HANDLER
+			try {
+				this.checkOperationAndDoWork(tokens, outputList);
+			}catch (final Exception e){
+				System.err.println(e.getMessage());
+			}
+			
 		}
 	}
 	
-	private void checkOperationAndDoWork(final String[] tokens, final List<String> outputList) {
+	private void checkOperationAndDoWork(final String[] tokens, final List<String> outputList) throws Exception{
 		final QueryOperation queryOperation;
 		switch (tokens[0]) {
 			case "q":
 				queryOperation = new SearchOperation(this.resultTable);
 				outputList.add(queryOperation.doWork(Arrays.copyOfRange(tokens, 1, tokens.length)));
-				break;
+				return;
 			case "o":
 				queryOperation = new OrderOperation(this.resultTable);
-				queryOperation.doWork(Arrays.copyOfRange(tokens, 1, tokens.length));
 				break;
 			case "u":
 				queryOperation = new UpdateOperation(this.resultTable);
-				queryOperation.doWork(Arrays.copyOfRange(tokens, 1, tokens.length));
 				break;
 			default:
 				System.err.println("Invalid operation type.");
-				break;
+				return;
 		}
+		queryOperation.doWork(Arrays.copyOfRange(tokens, 1, tokens.length));
 	}
 	
 	
